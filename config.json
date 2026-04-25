@@ -1,0 +1,6 @@
+{
+  "title": "Weekly Reminder",
+  "message": "21:00をお知らせします",
+  "mention": "@everyone",
+  "enabled": true
+}
