@@ -1,0 +1,24 @@
+name: Weekly Discord Reminder
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Saturday 21:00 JST == Saturday 12:00 UTC
+    - cron: "0 12 * * 6"
+
+jobs:
+  send-reminder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Send Discord reminder
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python scripts/send_reminder.py
