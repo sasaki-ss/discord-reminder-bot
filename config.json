@@ -1,6 +1,6 @@
 {
   "title": "Weekly Reminder",
-  "message": "This is your weekly reminder from GitHub Actions.",
-  "mention": "",
+  "message": "21:00をお知らせします",
+  "mention": "@everyone",
   "enabled": true
 }

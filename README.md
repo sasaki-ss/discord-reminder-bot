@@ -29,3 +29,4 @@ python scripts/send_reminder.py
 
 - If `enabled` is `false`, the script exits successfully without sending.
 - If `DISCORD_WEBHOOK_URL` is missing, the script exits with an error.
+- Message format: `[title]: message` (prefixes mention when configured).

@@ -12,7 +12,8 @@ from pathlib import Path
 from typing import Any
 
 
-CONFIG_PATH = Path("config.json")
+REPO_ROOT = Path(__file__).resolve().parent.parent
+CONFIG_PATH = REPO_ROOT / "config.json"
 REQUEST_TIMEOUT_SECONDS = 10
 
 
@@ -53,12 +54,18 @@ def load_config(path: Path) -> dict[str, Any]:
 
 
 def build_content(title: str, message: str, mention: str) -> str:
-    lines: list[str] = []
-    if mention.strip():
-        lines.append(mention.strip())
-    lines.append(f"**{title.strip()}**")
-    lines.append(message.strip())
-    return "\n".join(lines)
+    title_clean = " ".join(title.split())
+    message_clean = " ".join(message.split())
+
+    if title_clean:
+        body = f"[{title_clean}]: {message_clean}"
+    else:
+        body = message_clean
+
+    mention_clean = mention.strip()
+    if mention_clean:
+        return f"{mention_clean} {body}".strip()
+    return body.strip()
 
 
 def post_discord_message(webhook_url: str, content: str) -> None:
@@ -68,7 +75,11 @@ def post_discord_message(webhook_url: str, content: str) -> None:
         webhook_url,
         data=body,
         method="POST",
-        headers={"Content-Type": "application/json"},
+        headers={
+            "Content-Type": "application/json",
+            # Explicit UA helps avoid gateway/WAF edge-cases with default urllib UA.
+            "User-Agent": "discord-reminder-bot/1.0",
+        },
     )
 
     try:
@@ -78,7 +89,15 @@ def post_discord_message(webhook_url: str, content: str) -> None:
             if status < 200 or status >= 300:
                 raise RuntimeError(f"Discord webhook returned unexpected status: {status}")
     except urllib.error.HTTPError as exc:
-        raise RuntimeError(f"Discord webhook HTTP error: {exc.code}") from exc
+        details = ""
+        try:
+            error_body = exc.read().decode("utf-8", errors="replace").strip()
+            if error_body:
+                details = f" response={error_body}"
+        except Exception:
+            # Best-effort only; keep original HTTP code even if body decode fails.
+            details = ""
+        raise RuntimeError(f"Discord webhook HTTP error: {exc.code}{details}") from exc
     except urllib.error.URLError as exc:
         raise RuntimeError(f"Discord webhook request failed: {exc.reason}") from exc
 
