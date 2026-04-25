@@ -1,6 +1,6 @@
 ﻿# discord-reminder-bot
 
-GitHub Actions と Discord Webhook を使って、毎週土曜 21:00（JST）に通知を送るシンプルなリマインドBotです。
+GitHub Actions と Discord Webhook を使って、毎週土曜 20:55（JST）に通知を送るシンプルなリマインドBotです。
 
 ## 構成ファイル
 
@@ -19,8 +19,8 @@ GitHub Actions と Discord Webhook を使って、毎週土曜 21:00（JST）に
 
 ## 実行スケジュール
 
-- 毎週土曜 21:00（JST）に実行
-- GitHub Actions の cron（UTC）: `0 12 * * 6`
+- 毎週土曜 20:55（JST）に実行
+- GitHub Actions の cron（UTC）: `55 11 * * 6`
 
 ## 手動実行（ローカル）
 
@@ -50,3 +50,7 @@ $env:DISCORD_WEBHOOK_URL="https://discord.com/api/webhooks/..."
   - `mention [title]: message`
   - `mention` が空文字の場合は `[title]: message` になります。
 - 日本語のタイトル・メッセージにも対応しています（UTF-8）。
+
+## 追加検討バックログ
+
+- 追加検討Issueのドラフト: `docs/issue-backlog.md`
