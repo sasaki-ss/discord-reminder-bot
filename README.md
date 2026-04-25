@@ -1,32 +1,52 @@
 ﻿# discord-reminder-bot
 
-Weekly Discord reminder using GitHub Actions + Webhook.
+GitHub Actions と Discord Webhook を使って、毎週土曜 21:00（JST）に通知を送るシンプルなリマインドBotです。
 
-## Files
+## 構成ファイル
 
-- `config.json`: Reminder settings (`title`, `message`, `mention`, `enabled`)
-- `scripts/send_reminder.py`: Loads config and sends Discord webhook notification
-- `.github/workflows/remind.yml`: Weekly schedule + manual trigger workflow
+- `config.json`
+  - 通知設定を保持します（`title`, `message`, `mention`, `enabled`）。
+- `scripts/send_reminder.py`
+  - `config.json` を読み込み、Discord Webhook へ通知を送信します。
+- `.github/workflows/remind.yml`
+  - 定期実行（cron）と手動実行（`workflow_dispatch`）を定義します。
 
-## Setup
+## セットアップ
 
-1. Set `DISCORD_WEBHOOK_URL` in GitHub repository secrets.
-2. Update `config.json` values for your reminder content.
-3. Keep `"enabled": true` to send reminders.
+1. GitHub リポジトリの Secrets に `DISCORD_WEBHOOK_URL` を登録します。
+2. `config.json` の内容を用途に合わせて編集します。
+3. 通知を有効化する場合は `"enabled": true` にします。
 
-## Schedule
+## 実行スケジュール
 
-- Runs every Saturday at 21:00 JST.
-- In GitHub Actions cron (UTC): `0 12 * * 6`.
+- 毎週土曜 21:00（JST）に実行
+- GitHub Actions の cron（UTC）: `0 12 * * 6`
 
-## Manual test
+## 手動実行（ローカル）
 
-Run from repo root:
+リポジトリ直下で実行:
 
 ```bash
 python scripts/send_reminder.py
 ```
 
-- If `enabled` is `false`, the script exits successfully without sending.
-- If `DISCORD_WEBHOOK_URL` is missing, the script exits with an error.
-- Message format: `[title]: message` (prefixes mention when configured).
+`scripts` ディレクトリからでも実行可能:
+
+```bash
+python .\send_reminder.py
+```
+
+事前に Webhook URL を環境変数へ設定してください（PowerShell）:
+
+```powershell
+$env:DISCORD_WEBHOOK_URL="https://discord.com/api/webhooks/..."
+```
+
+## 動作仕様
+
+- `"enabled": false` の場合は送信せず正常終了します。
+- `DISCORD_WEBHOOK_URL` が未設定の場合はエラー終了します。
+- 通知フォーマットは次の1行です。
+  - `mention [title]: message`
+  - `mention` が空文字の場合は `[title]: message` になります。
+- 日本語のタイトル・メッセージにも対応しています（UTF-8）。
