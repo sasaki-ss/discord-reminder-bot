@@ -3,8 +3,8 @@ name: Weekly Discord Reminder
 on:
   workflow_dispatch:
   schedule:
-    # Saturday 21:00 JST == Saturday 12:00 UTC
-    - cron: "0 12 * * 6"
+    # Saturday 20:55 JST == Saturday 11:55 UTC
+    - cron: "55 11 * * 6"
 
 jobs:
   send-reminder:
